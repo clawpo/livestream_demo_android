@@ -16,15 +16,19 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import cn.ucai.live.R;
+
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
+
+import cn.ucai.live.R;
+import cn.ucai.live.utils.L;
+import cn.ucai.live.utils.MD5;
 
 /**
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends BaseActivity {
-
+  private static final String TAG = "LoginActivity";
 
   // UI references.
   private AutoCompleteTextView mEmailView;
@@ -116,8 +120,10 @@ public class LoginActivity extends BaseActivity {
       // Show a progress spinner, and kick off a background task to
       // perform the user login attempt.
       showProgress(true);
-      EMClient.getInstance().login(email.toString(), password.toString(), new EMCallBack() {
+      L.e(TAG,"login,success,1user="+EMClient.getInstance().getCurrentUser());
+      EMClient.getInstance().login(email.toString(), MD5.getMessageDigest(password.toString()), new EMCallBack() {
         @Override public void onSuccess() {
+          L.e(TAG,"login,success,2user="+EMClient.getInstance().getCurrentUser());
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         }
