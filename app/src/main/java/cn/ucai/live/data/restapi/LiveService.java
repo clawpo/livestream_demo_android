@@ -1,7 +1,12 @@
 package cn.ucai.live.data.restapi;
 
+import cn.ucai.live.I;
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
+import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 /**
@@ -81,5 +86,20 @@ public interface LiveService {
             @Query("pageId") int giftId,
             @Query("pageSize") int giftNum
     );
+
+    /** 加载用户数据 */
+    @GET("findUserByUserName")
+    Call<String> loadUserInfo(@Query(I.User.USER_NAME) String username);
+
+    /** 注册用户 */
+    //http://101.251.196.90:8080/SuperWeChatServerV2.0/register?
+    // m_user_name=1&m_user_nick=1&m_user_password=1
+    @Multipart
+    @POST("register")
+    Call<String> register(
+            @Query(I.User.USER_NAME) String username,
+            @Query(I.User.NICK) String nickname,
+            @Query(I.User.PASSWORD) String password,
+            @Part MultipartBody.Part file);
 
 }
