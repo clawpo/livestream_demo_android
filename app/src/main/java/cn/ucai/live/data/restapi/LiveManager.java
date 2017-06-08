@@ -9,6 +9,7 @@ import com.hyphenate.easeui.domain.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import cn.ucai.live.utils.L;
 import cn.ucai.live.utils.ResultUtils;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -355,5 +357,12 @@ public class LiveManager {
         Call<String> stringCall = liveService.loadUserInfo(username);
         Result<User> result = handleResponseCallToResult(stringCall, User.class);
         return result.getRetData();
+    }
+
+    public boolean register(String username,String nickname,String password,File file) throws LiveException {
+        RequestBody body = RequestBody.create(MediaType.parse("application/form-data"),file);
+        MultipartBody.Part partFile = MultipartBody.Part.createFormData("file",file.getName(),body);
+        Result<User> result = handleResponseCallToResult(liveService.register(username, nickname, password, partFile), User.class);
+        return result.isRetMsg();
     }
 }
