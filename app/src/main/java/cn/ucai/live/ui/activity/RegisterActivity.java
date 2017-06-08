@@ -143,6 +143,11 @@ public class RegisterActivity extends BaseActivity {
                         });
                     }
                 } catch (final LiveException e) {
+                    try {
+                        LiveManager.getInstance().unRegister(username);
+                    } catch (LiveException e1) {
+                        e1.printStackTrace();
+                    }
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {
                         @Override

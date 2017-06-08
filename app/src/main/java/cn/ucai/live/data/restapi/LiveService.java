@@ -102,4 +102,8 @@ public interface LiveService {
             @Query(I.User.PASSWORD) String password,
             @Part MultipartBody.Part file);
 
+    /** 取消注册用户 */
+    @GET("unregister")
+    Call<String> unregister(@Query(I.User.USER_NAME) String uesrname);
+
 }

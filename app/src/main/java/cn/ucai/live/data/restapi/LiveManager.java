@@ -365,4 +365,8 @@ public class LiveManager {
         Result<User> result = handleResponseCallToResult(liveService.register(username, nickname, password, partFile), User.class);
         return result.isRetMsg();
     }
+
+    public boolean unRegister(String username) throws LiveException {
+        return handleResponseCallToResult(liveService.unregister(username),User.class).isRetMsg();
+    }
 }
