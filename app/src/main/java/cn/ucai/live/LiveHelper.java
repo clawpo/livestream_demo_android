@@ -7,8 +7,12 @@ import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.controller.EaseUI;
+import com.hyphenate.easeui.domain.User;
+import com.hyphenate.easeui.model.EasePreferenceManager;
 import com.hyphenate.util.EMLog;
 
+import cn.ucai.live.data.restapi.LiveException;
+import cn.ucai.live.data.restapi.LiveManager;
 import cn.ucai.live.ui.activity.MainActivity;
 
 import static com.ucloud.ulive.UStreamingContext.appContext;
@@ -23,6 +27,7 @@ public class LiveHelper {
     private static LiveHelper instance = null;
     private String username;
     LiveModel model = null;
+    private User currentAppUser= null;
 
     private LiveHelper() {
     }
@@ -85,5 +90,52 @@ public class LiveHelper {
             username = model.getCurrentUsernName();
         }
         return username;
+    }
+
+    public void syncUserInfo() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    User user = LiveManager.getInstance().loadUserInfo(EMClient.getInstance().getCurrentUser());
+                    if (user!=null){
+                        setCurrentAppUserNick(user.getMUserNick());
+                        setCurrentAppUserAvatar(user.getAvatar());
+                    }
+                } catch (LiveException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+
+    private void setCurrentAppUserNick(String nickname) {
+        getCurrentAppUserInfo().setMUserNick(nickname);
+        EasePreferenceManager.getInstance().setCurrentUserNick(nickname);
+    }
+
+    private void setCurrentAppUserAvatar(String avatar) {
+        getCurrentAppUserInfo().setAvatar(avatar);
+        EasePreferenceManager.getInstance().setCurrentUserAvatar(avatar);
+    }
+
+    public synchronized User getCurrentAppUserInfo() {
+        if (currentAppUser == null) {
+            String username = EMClient.getInstance().getCurrentUser();
+            currentAppUser = new User(username);
+            String nick = getCurrentUserNick();
+            currentAppUser.setMUserNick((nick != null) ? nick : username);
+            currentAppUser.setAvatar(getCurrentUserAvatar());
+        }
+        return currentAppUser;
+    }
+
+    private String getCurrentUserNick() {
+        return EasePreferenceManager.getInstance().getCurrentUserNick();
+    }
+
+    private String getCurrentUserAvatar() {
+        return EasePreferenceManager.getInstance().getCurrentUserAvatar();
     }
 }

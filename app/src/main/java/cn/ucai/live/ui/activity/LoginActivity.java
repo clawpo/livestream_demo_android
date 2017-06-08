@@ -93,7 +93,7 @@ public class LoginActivity extends BaseActivity {
     mPasswordView.setError(null);
 
     // Store values at the time of the login attempt.
-    Editable email = mEmailView.getText();
+    final Editable email = mEmailView.getText();
     Editable password = mPasswordView.getText();
 
     boolean cancel = false;
@@ -125,6 +125,7 @@ public class LoginActivity extends BaseActivity {
       EMClient.getInstance().login(email.toString(), MD5.getMessageDigest(password.toString()), new EMCallBack() {
         @Override public void onSuccess() {
           L.e(TAG,"login,success,2user="+EMClient.getInstance().getCurrentUser());
+          LiveHelper.getInstance().syncUserInfo();
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         }
