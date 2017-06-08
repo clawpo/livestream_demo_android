@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 
+import cn.ucai.live.LiveHelper;
 import cn.ucai.live.R;
 import cn.ucai.live.utils.L;
 import cn.ucai.live.utils.MD5;
@@ -178,5 +179,14 @@ public class LoginActivity extends BaseActivity {
     }
   }
 
+  @Override
+  protected void onResume() {
+    super.onResume();
+
+    String username = LiveHelper.getInstance().getCurrentUsernName();
+    if (username!=null){
+      mEmailView.setText(username);
+    }
+  }
 }
 
