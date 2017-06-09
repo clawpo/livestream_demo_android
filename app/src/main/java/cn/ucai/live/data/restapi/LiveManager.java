@@ -15,6 +15,7 @@ import java.util.List;
 
 import cn.ucai.live.I;
 import cn.ucai.live.LiveApplication;
+import cn.ucai.live.data.model.Gift;
 import cn.ucai.live.data.model.LiveRoom;
 import cn.ucai.live.data.model.Result;
 import cn.ucai.live.data.restapi.model.LiveStatusModule;
@@ -78,6 +79,10 @@ public class LiveManager {
                 .build();
         liveService = liveRetrofit.create(LiveService.class);
 
+    }
+
+    public List<Gift> loadGiftList() throws LiveException {
+        return handleResponseCallToResultList(liveService.getAllGifts(), Gift.class).getRetData();
     }
 
 

@@ -10,16 +10,19 @@ import java.util.Map;
 
 import cn.ucai.live.LiveApplication;
 import cn.ucai.live.data.model.Gift;
+import cn.ucai.live.utils.L;
 
 /**
  * Created by clawpo on 2017/6/9.
  */
 
 public class LiveDBManager {
+    private static final String TAG = "LiveDBManager";
     private static LiveDBManager dbMgr = new LiveDBManager();
     private LiveDBOpenHelper dbHelper;
 
     private LiveDBManager(){
+        L.e(TAG,"LiveDBManager init dbhelper");
         dbHelper = LiveDBOpenHelper.getInstance(LiveApplication.getInstance().getApplicationContext());
     }
 
@@ -36,6 +39,7 @@ public class LiveDBManager {
      * @param list
      */
     synchronized public void saveGiftList(List<Gift> list) {
+        L.e(TAG,"saveGiftList to databases");
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         if (db.isOpen()) {
             db.delete(LiveDao.GIFT_TABLE_NAME, null, null);

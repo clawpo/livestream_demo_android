@@ -11,9 +11,17 @@ import com.hyphenate.easeui.domain.User;
 import com.hyphenate.easeui.model.EasePreferenceManager;
 import com.hyphenate.util.EMLog;
 
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
+import cn.ucai.live.data.local.LiveDao;
+import cn.ucai.live.data.model.Gift;
 import cn.ucai.live.data.restapi.LiveException;
 import cn.ucai.live.data.restapi.LiveManager;
 import cn.ucai.live.ui.activity.MainActivity;
+import cn.ucai.live.utils.L;
 
 import static com.ucloud.ulive.UStreamingContext.appContext;
 
@@ -28,6 +36,7 @@ public class LiveHelper {
     private String username;
     LiveModel model = null;
     private User currentAppUser= null;
+    private Map<Integer,Gift> giftMap;
 
     private LiveHelper() {
     }
@@ -60,6 +69,7 @@ public class LiveHelper {
                 }
             }
         });
+        getGiftListFromServer();
     }
 
     /**
@@ -142,5 +152,55 @@ public class LiveHelper {
     public synchronized void reset() {
         currentAppUser = null;
         EasePreferenceManager.getInstance().removeCurrentUserInfo();
+    }
+
+    public void setGiftList(Map<Integer,Gift> list) {
+        L.e(TAG,"setGiftList to cache");
+        if(list == null){
+            if (giftMap != null) {
+                giftMap.clear();
+            }
+            return;
+        }
+
+        giftMap = list;
+    }
+
+    public Map<Integer,Gift> getGiftList() {
+        if (giftMap == null) {
+            giftMap = model.getGiftList();
+        }
+
+        // return a empty non-null object to avoid app crash
+        if(giftMap == null){
+            return new Hashtable<Integer,Gift>();
+        }
+
+        return giftMap;
+    }
+
+    public Map<Integer,Gift> getGiftListFromServer(){
+        L.e(TAG,"getGiftListFromServer...");
+        if (getGiftList()==null){
+            try {
+                List<Gift> list = LiveManager.getInstance().loadGiftList();
+                L.e(TAG,"getGiftListFromServer...list="+list);
+                if (list!=null){
+                    Map<Integer,Gift> map = new HashMap<>();
+                    for (Gift gift : list) {
+                        L.e(TAG,"getGiftListFromServer...gift="+gift);
+                        map.put(gift.getId(),gift);
+                    }
+                    //save data to cache
+                    setGiftList(map);
+                    //save data to databases
+                    LiveDao dao = new LiveDao();
+                    dao.setGiftList(list);
+                }
+            } catch (LiveException e) {
+                e.printStackTrace();
+            }
+        }
+        return getGiftList();
     }
 }

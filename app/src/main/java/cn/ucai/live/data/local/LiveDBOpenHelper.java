@@ -4,11 +4,14 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import cn.ucai.live.utils.L;
+
 /**
  * Created by clawpo on 2017/6/9.
  */
 
 public class LiveDBOpenHelper extends SQLiteOpenHelper {
+    private static final String TAG = "LiveDBOpenHelper";
 
     private static final int versionNumber = 1;
     private static LiveDBOpenHelper instance;
@@ -22,6 +25,7 @@ public class LiveDBOpenHelper extends SQLiteOpenHelper {
 
     public LiveDBOpenHelper(Context context) {
         super(context, getDatabaseNames(context), null, versionNumber);
+        L.e(TAG,"LiveDBOpenHelper...");
     }
 
     private static String getDatabaseNames(Context context) {
@@ -30,6 +34,7 @@ public class LiveDBOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        L.e(TAG,"LiveDBOpenHelper...onCreate");
         sqLiteDatabase.execSQL(GIFT_TABLE_CREATE);
     }
 
