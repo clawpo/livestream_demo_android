@@ -7,6 +7,7 @@ import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.controller.EaseUI;
+import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.domain.User;
 import com.hyphenate.easeui.model.EasePreferenceManager;
 import com.hyphenate.util.EMLog;
@@ -23,6 +24,7 @@ import cn.ucai.live.data.restapi.LiveManager;
 import cn.ucai.live.ui.activity.MainActivity;
 import cn.ucai.live.utils.L;
 
+import static com.hyphenate.easeui.utils.EaseUserUtils.getUserInfo;
 import static com.ucloud.ulive.UStreamingContext.appContext;
 
 /**
@@ -37,6 +39,7 @@ public class LiveHelper {
     LiveModel model = null;
     private User currentAppUser= null;
     private Map<Integer,Gift> giftMap;
+    private EaseUI easeUI;
 
     private LiveHelper() {
     }
@@ -51,6 +54,9 @@ public class LiveHelper {
     public void init(final Context context){
         model = new LiveModel();
         EaseUI.getInstance().init(context, null);
+        easeUI = EaseUI.getInstance();
+        //to set user's profile and avatar
+        setEaseUIProviders();
         EMClient.getInstance().setDebugMode(true);
 
         EMClient.getInstance().addConnectionListener(new EMConnectionListener() {
@@ -70,6 +76,37 @@ public class LiveHelper {
             }
         });
         getGiftListFromServer();
+    }
+
+    private void setEaseUIProviders() {
+        easeUI.setUserProfileProvider(new EaseUI.EaseUserProfileProvider() {
+
+            @Override
+            public EaseUser getUser(String username) {
+                return getUserInfo(username);
+            }
+
+            @Override
+            public User getAppUser(String username) {
+                return getAppUserInfo(username);
+            }
+        });
+    }
+
+    private User getAppUserInfo(String username) {
+        // To get instance of EaseUser, here we get it from the user list in memory
+        // You'd better cache it if you get it from your server
+        User user = null;
+        if(username.equals(EMClient.getInstance().getCurrentUser()))
+            return getCurrentAppUserInfo();
+//        user = getAppContactList().get(username);
+//
+        // if user is not in your contacts, set inital letter for him/her
+        if(user == null){
+            user = new User(username);
+//            EaseCommonUtils.setAppUserInitialLetter(user);
+        }
+        return user;
     }
 
     /**
