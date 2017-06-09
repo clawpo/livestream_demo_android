@@ -20,7 +20,7 @@ public class LiveDBOpenHelper extends SQLiteOpenHelper {
             + LiveDao.GIFT_TABLE_NAME + " ("
             + LiveDao.GIFT_COLUMN_NAME + " TEXT, "
             + LiveDao.GIFT_COLUMN_URL + " TEXT, "
-            + LiveDao.GIFT_COLUMN_PRICE + " INTEGER "
+            + LiveDao.GIFT_COLUMN_PRICE + " INTEGER, "
             + LiveDao.GIFT_COLUMN_ID + " INTEGER PRIMARY KEY);";
 
     public LiveDBOpenHelper(Context context) {

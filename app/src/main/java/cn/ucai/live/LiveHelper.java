@@ -179,28 +179,33 @@ public class LiveHelper {
         return giftMap;
     }
 
-    public Map<Integer,Gift> getGiftListFromServer(){
+    public void getGiftListFromServer(){
         L.e(TAG,"getGiftListFromServer...");
-        if (getGiftList()==null){
-            try {
-                List<Gift> list = LiveManager.getInstance().loadGiftList();
-                L.e(TAG,"getGiftListFromServer...list="+list);
-                if (list!=null){
-                    Map<Integer,Gift> map = new HashMap<>();
-                    for (Gift gift : list) {
-                        L.e(TAG,"getGiftListFromServer...gift="+gift);
-                        map.put(gift.getId(),gift);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                L.e(TAG,"getGiftListFromServer...getGiftList()");
+                getGiftList().clear();
+                try {
+                    List<Gift> list = LiveManager.getInstance().loadGiftList();
+                    L.e(TAG,"getGiftListFromServer...list="+list);
+                    if (list!=null){
+                        Map<Integer,Gift> map = new HashMap<>();
+                        for (Gift gift : list) {
+                            L.e(TAG,"getGiftListFromServer...gift="+gift);
+                            map.put(gift.getId(),gift);
+                        }
+                        //save data to cache
+                        setGiftList(map);
+                        //save data to databases
+                        LiveDao dao = new LiveDao();
+                        dao.setGiftList(list);
                     }
-                    //save data to cache
-                    setGiftList(map);
-                    //save data to databases
-                    LiveDao dao = new LiveDao();
-                    dao.setGiftList(list);
+                } catch (LiveException e) {
+                    e.printStackTrace();
                 }
-            } catch (LiveException e) {
-                e.printStackTrace();
             }
-        }
-        return getGiftList();
+        }).start();
+
     }
 }
