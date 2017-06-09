@@ -12,15 +12,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import cn.ucai.live.data.restapi.LiveException;
-import cn.ucai.live.ucloud.LiveCameraView;
-
-import cn.ucai.live.R;
-import cn.ucai.live.data.restapi.LiveManager;
-import cn.ucai.live.ucloud.AVOption;
 
 import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMChatRoom;
@@ -30,6 +21,17 @@ import com.ucloud.ulive.UFilterProfile;
 import com.ucloud.ulive.UNetworkListener;
 import com.ucloud.ulive.UStreamStateListener;
 import com.ucloud.ulive.UVideoProfile;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import cn.ucai.live.LiveHelper;
+import cn.ucai.live.R;
+import cn.ucai.live.data.restapi.LiveException;
+import cn.ucai.live.data.restapi.LiveManager;
+import cn.ucai.live.ucloud.AVOption;
+import cn.ucai.live.ucloud.LiveCameraView;
+import cn.ucai.live.utils.L;
 
 public class LiveAnchorActivity extends LiveBaseActivity {
     private static final String TAG = LiveAnchorActivity.class.getSimpleName();
@@ -69,6 +71,13 @@ public class LiveAnchorActivity extends LiveBaseActivity {
             }
         }
     };
+
+    @Override
+    protected void loadAnchor(String anchorId) {
+        L.e(TAG,"loadAnchor.....anchorId="+anchorId);
+        liveRoom.setNickName(LiveHelper.getInstance().getCurrentAppUserInfo().getMUserNick());
+        L.e(TAG,"loadAnchor.....liveRoom.getnick="+liveRoom.getNickName());
+    }
 
     //203138620012364216
     @Override protected void onActivityCreate(@Nullable Bundle savedInstanceState) {

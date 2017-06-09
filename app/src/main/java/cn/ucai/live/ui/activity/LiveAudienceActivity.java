@@ -9,18 +9,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import cn.ucai.live.data.restapi.LiveException;
 
 import com.bumptech.glide.Glide;
-import cn.ucai.live.LiveConstants;
-import cn.ucai.live.R;
-import cn.ucai.live.ThreadPoolManager;
-import cn.ucai.live.data.restapi.LiveManager;
-import cn.ucai.live.data.restapi.model.LiveStatusModule;
-import cn.ucai.live.data.restapi.model.StatisticsType;
 import com.hyphenate.EMError;
 import com.hyphenate.EMValueCallBack;
 import com.hyphenate.chat.EMChatRoom;
@@ -28,13 +18,28 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.controller.EaseUI;
+import com.hyphenate.easeui.domain.User;
 import com.hyphenate.exceptions.HyphenateException;
 import com.ucloud.uvod.UMediaProfile;
 import com.ucloud.uvod.UPlayerStateListener;
 import com.ucloud.uvod.widget.UVideoView;
+
 import java.util.Random;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import cn.ucai.live.LiveConstants;
+import cn.ucai.live.R;
+import cn.ucai.live.ThreadPoolManager;
+import cn.ucai.live.data.restapi.LiveException;
+import cn.ucai.live.data.restapi.LiveManager;
+import cn.ucai.live.data.restapi.model.LiveStatusModule;
+import cn.ucai.live.data.restapi.model.StatisticsType;
+import cn.ucai.live.utils.L;
+
 public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerStateListener {
+    private static final String TAG = "LiveAudienceActivity";
 
     String rtmpPlayStreamUrl = "rtmp://vlive3.rtmp.cdn.ucloud.com.cn/ucloud/";
     private UVideoView mVideoView;
@@ -44,6 +49,29 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
     @BindView(R.id.progress_bar) ProgressBar progressBar;
     @BindView(R.id.loading_text) TextView loadingText;
     @BindView(R.id.cover_image) ImageView coverView;
+
+    @Override
+    protected void loadAnchor(String anchorId) {
+        L.e(TAG,"loadAnchor.....anchorId="+anchorId);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    User user = LiveManager.getInstance().loadUserInfo(liveRoom.getAnchorId());
+                    liveRoom.setNickName(user.getMUserNick());
+                    L.e(TAG,"loadAnchor.....liveRoom.getnick="+liveRoom.getNickName());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            intAnchorInfo();
+                        }
+                    });
+                } catch (LiveException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
     @Override protected void onActivityCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.activity_live_audience);

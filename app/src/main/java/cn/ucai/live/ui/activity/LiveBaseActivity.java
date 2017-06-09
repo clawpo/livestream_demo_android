@@ -40,6 +40,7 @@ import cn.ucai.live.data.TestAvatarRepository;
 import cn.ucai.live.data.model.LiveRoom;
 import cn.ucai.live.ui.widget.PeriscopeLayout;
 import cn.ucai.live.ui.widget.RoomMessagesView;
+import cn.ucai.live.utils.L;
 import cn.ucai.live.utils.Utils;
 
 /**
@@ -100,12 +101,27 @@ public abstract class LiveBaseActivity extends BaseActivity {
         chatroomId = liveRoom.getChatroomId();
         anchorId = liveRoom.getAnchorId();
         onActivityCreate(savedInstanceState);
-        usernameView.setText(anchorId);
-        EaseUserUtils.setAppUserAvatar(LiveBaseActivity.this,anchorId,useravatarView);
+        //loadanchorUserInfo
+        loadAnchor(anchorId);
+        intAnchorInfo();
         liveIdView.setText(liveId);
         audienceNumView.setText(String.valueOf(liveRoom.getAudienceNum()));
         watchedCount = liveRoom.getAudienceNum();
     }
+
+    public void intAnchorInfo() {
+        L.e(TAG,"intAnchorInfo.....");
+        //set nick
+
+        if (liveRoom.getNickName()==null){
+            usernameView.setText(anchorId);
+        }else{
+            usernameView.setText(liveRoom.getNickName());
+        }
+        EaseUserUtils.setAppUserAvatar(LiveBaseActivity.this, anchorId, useravatarView);
+    }
+
+    protected abstract void loadAnchor(String anchorId);
 
     protected Handler handler = new Handler();
 
