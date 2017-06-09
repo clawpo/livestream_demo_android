@@ -221,25 +221,26 @@ public class LiveHelper {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                L.e(TAG,"getGiftListFromServer...getGiftList()");
-                getGiftList().clear();
-                try {
-                    List<Gift> list = LiveManager.getInstance().loadGiftList();
-                    L.e(TAG,"getGiftListFromServer...list="+list);
-                    if (list!=null){
-                        Map<Integer,Gift> map = new HashMap<>();
-                        for (Gift gift : list) {
-                            L.e(TAG,"getGiftListFromServer...gift="+gift);
-                            map.put(gift.getId(),gift);
+                L.e(TAG,"getGiftListFromServer...getGiftList()="+getGiftList().size());
+                if (getGiftList().size()==0) {
+                    try {
+                        List<Gift> list = LiveManager.getInstance().loadGiftList();
+                        L.e(TAG, "getGiftListFromServer...list=" + list);
+                        if (list != null) {
+                            Map<Integer, Gift> map = new HashMap<>();
+                            for (Gift gift : list) {
+                                L.e(TAG, "getGiftListFromServer...gift=" + gift);
+                                map.put(gift.getId(), gift);
+                            }
+                            //save data to cache
+                            setGiftList(map);
+                            //save data to databases
+                            LiveDao dao = new LiveDao();
+                            dao.setGiftList(list);
                         }
-                        //save data to cache
-                        setGiftList(map);
-                        //save data to databases
-                        LiveDao dao = new LiveDao();
-                        dao.setGiftList(list);
+                    } catch (LiveException e) {
+                        e.printStackTrace();
                     }
-                } catch (LiveException e) {
-                    e.printStackTrace();
                 }
             }
         }).start();
