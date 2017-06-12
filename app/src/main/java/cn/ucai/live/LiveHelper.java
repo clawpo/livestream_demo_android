@@ -40,6 +40,7 @@ public class LiveHelper {
     private User currentAppUser= null;
     private Map<Integer,Gift> giftMap;
     private EaseUI easeUI;
+    private Map<String, User> appContactList;
 
     private LiveHelper() {
     }
@@ -99,7 +100,7 @@ public class LiveHelper {
         User user = null;
         if(username.equals(EMClient.getInstance().getCurrentUser()))
             return getCurrentAppUserInfo();
-//        user = getAppContactList().get(username);
+        user = getAppContactList().get(username);
 //
         // if user is not in your contacts, set inital letter for him/her
         if(user == null){
@@ -107,6 +108,19 @@ public class LiveHelper {
 //            EaseCommonUtils.setAppUserInitialLetter(user);
         }
         return user;
+    }
+
+    public Map<String, User> getAppContactList() {
+        // return a empty non-null object to avoid app crash
+        if(appContactList == null){
+            appContactList = new Hashtable<String, User>();
+        }
+
+        return appContactList;
+    }
+
+    public void saveAppContact(User user){
+        getAppContactList().put(user.getMUserName(), user);
     }
 
     /**
@@ -217,19 +231,15 @@ public class LiveHelper {
     }
 
     public void getGiftListFromServer(){
-        L.e(TAG,"getGiftListFromServer...");
         new Thread(new Runnable() {
             @Override
             public void run() {
-                L.e(TAG,"getGiftListFromServer...getGiftList()="+getGiftList().size());
                 if (getGiftList().size()==0) {
                     try {
                         List<Gift> list = LiveManager.getInstance().loadGiftList();
-                        L.e(TAG, "getGiftListFromServer...list=" + list);
                         if (list != null) {
                             Map<Integer, Gift> map = new HashMap<>();
                             for (Gift gift : list) {
-                                L.e(TAG, "getGiftListFromServer...gift=" + gift);
                                 map.put(gift.getId(), gift);
                             }
                             //save data to cache

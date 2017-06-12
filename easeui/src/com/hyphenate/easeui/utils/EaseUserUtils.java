@@ -13,6 +13,7 @@ import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.domain.User;
 
 public class EaseUserUtils {
+    private static final String TAG = "EaseUserUtils";
     
     static EaseUserProfileProvider userProvider;
     
