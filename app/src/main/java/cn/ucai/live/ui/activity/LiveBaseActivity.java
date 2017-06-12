@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMChatRoomChangeListener;
 import com.hyphenate.EMMessageListener;
@@ -536,11 +535,12 @@ public abstract class LiveBaseActivity extends BaseActivity {
                     showUserDetailsDialog(namelist.get(position));
                 }
             });
-            //暂时使用测试数据
-            Glide.with(context)
-                    .load(avatarRepository.getAvatar())
-                    .placeholder(R.drawable.ease_default_avatar)
-                    .into(holder.Avatar);
+            EaseUserUtils.setAppUserAvatar(context,namelist.get(position),holder.Avatar);
+//            //暂时使用测试数据
+//            Glide.with(context)
+//                    .load(avatarRepository.getAvatar())
+//                    .placeholder(R.drawable.ease_default_avatar)
+//                    .into(holder.Avatar);
         }
 
         @Override public int getItemCount() {
