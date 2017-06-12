@@ -14,20 +14,23 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.hyphenate.EMValueCallBack;
+import com.hyphenate.chat.EMChatRoom;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.easeui.utils.EaseUserUtils;
+import com.hyphenate.easeui.widget.EaseImageView;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import cn.ucai.live.data.model.LiveRoom;
-
 import cn.ucai.live.R;
-
+import cn.ucai.live.data.model.LiveRoom;
 import cn.ucai.live.utils.Utils;
-import com.hyphenate.EMValueCallBack;
-import com.hyphenate.chat.EMChatRoom;
-import com.hyphenate.chat.EMClient;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by wei on 2016/7/25.
@@ -36,6 +39,7 @@ public class RoomUserDetailsDialog extends DialogFragment {
 
     Unbinder unbinder;
     @BindView(R.id.tv_username) TextView usernameView;
+    @BindView(R.id.eiv_avatar) EaseImageView useravatarView;
     @BindView(R.id.btn_set_admin) Button setAdminButton;
     @BindView(R.id.layout_management) RelativeLayout managementLayout;
 
@@ -86,6 +90,8 @@ public class RoomUserDetailsDialog extends DialogFragment {
         }
         if (username != null) {
             usernameView.setText(username);
+            EaseUserUtils.setAppUserAvatar(getContext(),username,useravatarView);
+            EaseUserUtils.setAppUserNick(username,usernameView);
         }
         //mentionBtn.setText("@TA");
     }

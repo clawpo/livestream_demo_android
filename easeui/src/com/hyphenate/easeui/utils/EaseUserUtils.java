@@ -90,5 +90,15 @@ public class EaseUserUtils {
             Glide.with(context).load(R.drawable.ease_default_avatar).into(imageView);
         }
     }
-    
+
+    public static void setAppUserNick(String username, TextView textView) {
+        if(textView != null){
+            User user = getAppUserInfo(username);
+            if(user != null && user.getMUserNick() != null){
+                textView.setText(user.getMUserNick());
+            }else{
+                textView.setText(username);
+            }
+        }
+    }
 }
