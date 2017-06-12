@@ -420,10 +420,10 @@ public abstract class LiveBaseActivity extends BaseActivity {
 
             @Override public void onSuccess(Void aVoid) {
                 int size = chatroom.getMemberCount();
-                audienceNumView.setText(String.valueOf(size));
-                membersCount = size;
+                membersCount = memberList.size();
                 //观看人数不包含主播
                 watchedCount = membersCount -1;
+                audienceNumView.setText(String.valueOf(membersCount));
                 notifyDataSetChanged();
             }
 
@@ -462,8 +462,8 @@ public abstract class LiveBaseActivity extends BaseActivity {
     }
 
     private synchronized void onRoomMemberExited(final String name) {
-        memberList.remove(name);
-        membersCount--;
+        if (memberList.remove(name))
+            membersCount--;
         EMLog.e(TAG, name + "exited");
         runOnUiThread(new Runnable() {
             @Override public void run() {
