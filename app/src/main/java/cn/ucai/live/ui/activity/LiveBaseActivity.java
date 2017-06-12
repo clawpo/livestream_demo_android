@@ -420,7 +420,11 @@ public abstract class LiveBaseActivity extends BaseActivity {
 
             @Override public void onSuccess(Void aVoid) {
                 int size = chatroom.getMemberCount();
+                //获取在线观看的人数，添加自己
                 membersCount = memberList.size();
+                L.e(TAG,"onSuccess,size="+size+",membersCount="+membersCount+
+                        ",liveRoom.getAudienceNum()="+liveRoom.getAudienceNum());
+                showMember();
                 //观看人数不包含主播
                 watchedCount = membersCount -1;
                 audienceNumView.setText(String.valueOf(membersCount));
@@ -431,6 +435,22 @@ public abstract class LiveBaseActivity extends BaseActivity {
 
             }
         });
+    }
+
+    private void showMember() {
+        L.e(TAG,"showMember chatroom="+chatroom);
+        if (chatroom!=null){
+            L.e(TAG,"showMember is "+chatroom.getMemberCount());
+            memberList.addAll(chatroom.getMemberList());
+            runOnUiThread(new Runnable() {
+                @Override public void run() {
+                    audienceNumView.setText(String.valueOf(membersCount));
+                    notifyDataSetChanged();
+                }
+            });
+        }else{
+            L.e(TAG,"showMember is null");
+        }
     }
 
     private synchronized void onRoomMemberAdded(String name) {
