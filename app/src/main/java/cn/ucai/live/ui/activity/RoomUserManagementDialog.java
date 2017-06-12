@@ -13,22 +13,32 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+
 import cn.ucai.live.R;
+import cn.ucai.live.utils.L;
 
 /**
  * Created by wei on 2017/3/3.
  */
 
 public class RoomUserManagementDialog extends DialogFragment {
-
+    private static final String TAG = "RoomUserManagementDialo";
     private String chatroomId;
     TabLayout tabLayout;
     ViewPager viewPager;
 
     public RoomUserManagementDialog(){}
 
-    public RoomUserManagementDialog(String chatroomId){
-        this.chatroomId = chatroomId;
+//    public RoomUserManagementDialog(String chatroomId){
+//        this.chatroomId = chatroomId;
+//    }
+
+    public static RoomUserManagementDialog newInstance(String chatroomId) {
+        RoomUserManagementDialog dialog = new RoomUserManagementDialog();
+        Bundle args = new Bundle();
+        args.putString("chatroomId", chatroomId);
+        dialog.setArguments(args);
+        return dialog;
     }
 
     @Nullable @Override
@@ -50,20 +60,24 @@ public class RoomUserManagementDialog extends DialogFragment {
 
         tabLayout = (TabLayout) getView().findViewById(R.id.tabs);
         viewPager = (ViewPager) getView().findViewById(R.id.viewpager);
-
-
+        if (getArguments()!=null){
+            this.chatroomId = getArguments().getString("chatroomId");
+        }
+        L.e(TAG,"onActivityCreated,chatroomId="+chatroomId);
         setupViewPager();
         tabLayout.setupWithViewPager(viewPager);
     }
 
     private void setupViewPager() {
-        FragmentAdapter adapter = new FragmentAdapter(getChildFragmentManager());
-        adapter.addFragment(RoomUserManagementFragment.newInstance(chatroomId,
-                RoomUserManagementFragment.ManagementType.ADMIN), "房管");
-        adapter.addFragment(RoomUserManagementFragment.newInstance(chatroomId,
-                RoomUserManagementFragment.ManagementType.MUTE), "禁言");
-        adapter.addFragment(RoomUserManagementFragment.newInstance(chatroomId,
-                RoomUserManagementFragment.ManagementType.BLACKLIST), "黑名单");
-        viewPager.setAdapter(adapter);
+        if (chatroomId!=null) {
+            FragmentAdapter adapter = new FragmentAdapter(getChildFragmentManager());
+            adapter.addFragment(RoomUserManagementFragment.newInstance(chatroomId,
+                    RoomUserManagementFragment.ManagementType.ADMIN), "房管");
+            adapter.addFragment(RoomUserManagementFragment.newInstance(chatroomId,
+                    RoomUserManagementFragment.ManagementType.MUTE), "禁言");
+            adapter.addFragment(RoomUserManagementFragment.newInstance(chatroomId,
+                    RoomUserManagementFragment.ManagementType.BLACKLIST), "黑名单");
+            viewPager.setAdapter(adapter);
+        }
     }
 }

@@ -507,7 +507,8 @@ public abstract class LiveBaseActivity extends BaseActivity {
     }
 
     @OnClick(R.id.user_manager_image) void showUserList() {
-        RoomUserManagementDialog managementDialog = new RoomUserManagementDialog(chatroomId);
+        RoomUserManagementDialog managementDialog = RoomUserManagementDialog.newInstance(chatroomId);
+//                new RoomUserManagementDialog(chatroomId);
         managementDialog.show(getSupportFragmentManager(), "RoomUserManagementDialog");
     }
 
