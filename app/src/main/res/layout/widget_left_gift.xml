@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="15dp"
-    android:layout_marginRight="5dp"
-    android:gravity="center_vertical"
-    android:orientation="horizontal">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_marginLeft="15dp"
+              android:layout_marginRight="5dp"
+              android:gravity="center_vertical"
+              android:orientation="horizontal">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -50,13 +51,25 @@
                     />
 
             </LinearLayout>
-
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
-                android:text="送了一个校园之星"
-                android:textColor="#4d73ff" />
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:text="送了一个"
+                    android:textColor="#4d73ff" />
+                <TextView
+                    android:id="@+id/gift_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    tools:text="校园之星"
+                    android:textColor="#4d73ff" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
