@@ -47,7 +47,7 @@
             />
     </RelativeLayout>
     <ImageView
-        android:id="@+id/gift_image"
+        android:id="@+id/send_gift_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="12dp"

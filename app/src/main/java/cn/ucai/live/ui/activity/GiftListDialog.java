@@ -45,6 +45,7 @@ public class GiftListDialog extends DialogFragment {
     TextView mTvRecharge;
     Unbinder bind;
     GiftAdapter adapter;
+    View.OnClickListener mOnClickListener;
 
     public GiftListDialog() {
     }
@@ -86,6 +87,10 @@ public class GiftListDialog extends DialogFragment {
             //download gift list data
             LiveHelper.getInstance().getGiftListFromServer();
         }
+    }
+
+    public void setOnClickListener(View.OnClickListener listener){
+        mOnClickListener = listener;
     }
 
     private void initView() {
@@ -132,6 +137,8 @@ public class GiftListDialog extends DialogFragment {
                 holder.mTvGiftName.setText(gift.getGname());
                 holder.mTvGiftPrice.setText("￥ "+gift.getGprice());
                 EaseUserUtils.setAppGift(mContext,gift.getGurl(),holder.mIvGiftThumb);
+                holder.itemView.setTag(gift.getId());
+                holder.itemView.setOnClickListener(mOnClickListener);
             }
         }
 
