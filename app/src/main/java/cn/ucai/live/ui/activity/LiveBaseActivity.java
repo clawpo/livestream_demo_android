@@ -511,6 +511,10 @@ public abstract class LiveBaseActivity extends BaseActivity {
 //                new RoomUserManagementDialog(chatroomId);
         managementDialog.show(getSupportFragmentManager(), "RoomUserManagementDialog");
     }
+    @OnClick(R.id.gift_image) void showGiftList(){
+        GiftListDialog giftListDialog = GiftListDialog.newInstance();
+        giftListDialog.show(getSupportFragmentManager(),"GiftListDialog");
+    }
 
     //@OnClick(R.id.present_image) void onPresentImageClick() {
     //  EMMessage message = EMMessage.createSendMessage(EMMessage.Type.CMD);
