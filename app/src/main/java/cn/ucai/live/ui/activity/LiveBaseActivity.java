@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,6 +26,7 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
+import com.hyphenate.easeui.model.EasePreferenceManager;
 import com.hyphenate.easeui.utils.EaseUserUtils;
 import com.hyphenate.easeui.widget.EaseImageView;
 import com.hyphenate.exceptions.HyphenateException;
@@ -528,15 +531,26 @@ public abstract class LiveBaseActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 int giftId = (int) view.getTag();
-                showSendDialog(giftId);
+                showSendDialogPre(giftId);
 //                sendGift(giftId);
             }
         });
         giftListDialog.show(getSupportFragmentManager(),"GiftListDialog");
     }
 
+    private void showSendDialogPre(int giftId){
+        if (EasePreferenceManager.getInstance().getShowDialog()){
+            sendGift(giftId);
+        }else{
+            showSendDialog(giftId);
+        }
+    }
+
     private void showSendDialog(final int giftId) {
         Gift gift = LiveHelper.getInstance().getGiftList().get(giftId);
+        CheckBox cb = new CheckBox(LiveBaseActivity.this);
+        cb.setText("不再提示");
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("提示")
                 .setMessage("你确定打赏"+gift.getGname()+"吗？")
@@ -552,7 +566,14 @@ public abstract class LiveBaseActivity extends BaseActivity {
                         sendGift(giftId);
                     }
                 })
+                .setView(cb)
                 .show();
+        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                EasePreferenceManager.getInstance().setShowDialog(b);
+            }
+        });
     }
 
     private void sendGift(int giftId) {

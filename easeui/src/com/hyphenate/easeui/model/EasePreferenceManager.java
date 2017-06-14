@@ -18,6 +18,7 @@ public class EasePreferenceManager {
     private static String SHARED_KEY_CURRENTUSER_USERNAME = "SHARED_KEY_CURRENTUSER_USERNAME";
     private static String SHARED_KEY_CURRENTUSER_NICK = "SHARED_KEY_CURRENTUSER_NICK";
     private static String SHARED_KEY_CURRENTUSER_AVATAR = "SHARED_KEY_CURRENTUSER_AVATAR";
+    private static String SHARED_KEY_SHOW_SEND_DIALOG = "SHARED_KEY_SHOW_SEND_DIALOG";
     
     private EasePreferenceManager(){
         mSharedPreferences = EaseUI.getInstance().getContext().getSharedPreferences("EM_SP_AT_MESSAGE", Context.MODE_PRIVATE);
@@ -62,6 +63,14 @@ public class EasePreferenceManager {
         userEditor.apply();
     }
 
+    public void setShowDialog(boolean isShow){
+        userEditor.putBoolean(SHARED_KEY_SHOW_SEND_DIALOG, isShow);
+        userEditor.apply();
+    }
+
+    public boolean getShowDialog() {
+        return mUserSharedPreferences.getBoolean(SHARED_KEY_SHOW_SEND_DIALOG,false);
+    }
     public String getCurrentUserNick() {
         return mUserSharedPreferences.getString(SHARED_KEY_CURRENTUSER_NICK, null);
     }
