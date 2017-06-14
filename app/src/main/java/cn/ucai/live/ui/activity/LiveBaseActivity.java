@@ -1,9 +1,11 @@
 package cn.ucai.live.ui.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -277,6 +279,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
         @Override public void onCmdMessageReceived(List<EMMessage> messages) {
             EMMessage message = messages.get(messages.size() - 1);
             if (LiveConstants.CMD_GIFT.equals(((EMCmdMessageBody) message.getBody()).action())) {
+                L.e(TAG,"onCmdMessageReceived,message="+message);
                 showLeftGiftView(message);
             } else if(LiveConstants.CMD_PRAISE.equals(((EMCmdMessageBody) message.getBody()).action())) {
                 showPraise(message.getIntAttribute(LiveConstants.EXTRA_PRAISE_COUNT, 1));
@@ -525,10 +528,31 @@ public abstract class LiveBaseActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 int giftId = (int) view.getTag();
-                sendGift(giftId);
+                showSendDialog(giftId);
+//                sendGift(giftId);
             }
         });
         giftListDialog.show(getSupportFragmentManager(),"GiftListDialog");
+    }
+
+    private void showSendDialog(final int giftId) {
+        Gift gift = LiveHelper.getInstance().getGiftList().get(giftId);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("提示")
+                .setMessage("你确定打赏"+gift.getGname()+"吗？")
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        sendGift(giftId);
+                    }
+                })
+                .show();
     }
 
     private void sendGift(int giftId) {
@@ -606,6 +630,15 @@ public abstract class LiveBaseActivity extends BaseActivity {
         }
     }
     protected synchronized void showLeftGiftView(EMMessage message) {
+
+        try {
+            String name = message.getFrom();
+            int giftId = message.getIntAttribute(LiveConstants.CMD_GIFT,0);
+            String nick = message.getStringAttribute(I.User.NICK);
+            L.e(TAG,"showLeftGiftView,name="+name+",giftid="+giftId+",nick="+nick);
+        } catch (HyphenateException e) {
+            e.printStackTrace();
+        }
         if (!isGift2Showing) {
             showGift2Direct(message);
         } else if (!isGiftShowing) {
